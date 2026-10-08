@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}API · {{ app_name }}{% endblock %}
+{% block content %}
+<h1>API reference</h1>
+<p class="sub">Endpoint table generated from this running app's <span class="mono">url_map</span>.</p>
+
+<h2>Registered endpoints</h2>
+<div class="card">
+  <table>
+    <thead><tr><th>Methods</th><th>Rule</th><th>Endpoint</th></tr></thead>
+    <tbody>
+    {% for r in rules %}<tr><td class="mono">{{ r.methods }}</td><td class="mono">{{ r.rule }}</td><td class="mono">{{ r.endpoint }}</td></tr>{% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<h2>Contract</h2>
+<div class="card">
+  <table>
+    <thead><tr><th>Route</th><th>Success</th><th>Failure modes</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">GET /pixel/&lt;domain&gt;?path=&amp;ref=</td><td class="mono">200 image/gif (1×1)</td><td class="mono">404 unknown domain</td></tr>
+      <tr><td class="mono">GET /api/sites</td><td class="mono">200 {"sites":[{"id","domain","views"}]}</td><td class="mono">—</td></tr>
+      <tr><td class="mono">POST /api/sites {"domain": "…"}</td><td class="mono">200 {"id": n}</td><td class="mono">400 on malformed/invalid JSON, 500 on constraint</td></tr>
+      <tr><td class="mono">GET /api/sites/&lt;id&gt;/stats?days=7</td><td class="mono">200 {"series":[…], "pages":[[path,count]], "referrers":{ref:pct}}</td><td class="mono">— (unknown id returns an empty series, not 404)</td></tr>
+    </tbody>
+  </table>
+  <p class="sub" style="margin:12px 0 0">
+    The pixel reads its referrer from the <span class="mono">ref</span> query parameter, not from an HTTP
+    <span class="mono">Referer</span> header — that is deliberate, and it is why the endpoint needs no cookie.
+  </p>
+</div>
+{% endblock %}

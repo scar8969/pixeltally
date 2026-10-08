@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{% block title %}{{ site.domain }} · {{ app_name }}{% endblock %}
+{% block content %}
+<h1>{{ site.domain }}</h1>
+<p class="sub">Site #{{ site.id }} · {{ total_views }} view(s) total · window {{ days }} day(s)</p>
+
+<div class="grid">
+  <div class="stat"><div class="k">Views / {{ days }}d</div><div class="v">{{ window_views }}</div></div>
+  <div class="stat"><div class="k">Visitors / {{ days }}d</div><div class="v">{{ window_visitors }}</div></div>
+  <div class="stat"><div class="k">Pages tracked</div><div class="v">{{ pages|length }}</div></div>
+  <div class="stat"><div class="k">Referrer sources</div><div class="v">{{ referrers|length }}</div></div>
+</div>
+
+<h2>Embed snippet</h2>
+<div class="card">
+  <pre>&lt;img src="{{ pixel_absolute }}"
+     width="1" height="1" alt="" referrerpolicy="no-referrer-when-downgrade"&gt;</pre>
+  <p class="sub" style="margin:10px 0 0">
+    The pixel query parameter is <span class="mono">ref</span> (not <span class="mono">referrer</span>) and
+    <span class="mono">path</span>. It answers <span class="mono">image/gif</span> with
+    <span class="mono">Cache-Control: no-store</span> and sets no cookie.
+  </p>
+</div>
+
+<h2>Views per day</h2>
+<div class="card">
+  {% if series %}
+  <div class="chart">
+    {% for d in series %}
+      <div class="col" title="{{ d.date }}: {{ d.views }} views / {{ d.visitors }} visitors">
+        <i style="height:{{ (d.views * 100 / series_max) | round(1) }}%"></i>
+        <span>{{ d.date[5:] }}</span>
+      </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty">No views in the last {{ days }} days.</div>
+  {% endif %}
+</div>
+
+<h2>Top pages ({{ days }}d)</h2>
+<div class="card">
+  {% if pages %}
+  <table>
+    <thead><tr><th>Path</th><th>Views</th><th>Share</th></tr></thead>
+    <tbody>
+    {% for path, count in pages %}
+      <tr>
+        <td class="mono">{{ path }}</td>
+        <td class="mono">{{ count }}</td>
+        <td style="width:45%">
+          <div class="bar"><i style="width:{{ (count * 100 / pages_max) | round(1) }}%"></i></div>
+          <span class="mono" style="color:var(--muted)">{{ (count * 100 / pages_total) | round(1) }}%</span>
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="empty">No page views recorded in this window.</div>
+  {% endif %}
+</div>
+
+<h2>Referrers ({{ days }}d)</h2>
+<div class="card">
+  {% if referrers %}
+  <table>
+    <thead><tr><th>Source</th><th>Share</th></tr></thead>
+    <tbody>
+    {% for ref, pct in referrers.items() %}
+      <tr>
+        <td class="mono">{{ ref }}</td>
+        <td style="width:60%">
+          <div class="bar"><i style="width:{{ pct }}%"></i></div>
+          <span class="mono" style="color:var(--muted)">{{ pct }}%</span>
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="empty">No referrers in this window.</div>
+  {% endif %}
+</div>
+
+<h2>Send a test hit</h2>
+<div class="card">
+  <form class="row" method="post" action="{{ url_for('site_pixel_test', sid=site.id) }}">
+    <div style="min-width:180px">
+      <label for="path">Path</label>
+      <input id="path" type="text" name="path" style="width:100%" value="/">
+    </div>
+    <div style="min-width:180px">
+      <label for="ref">ref</label>
+      <input id="ref" type="text" name="ref" style="width:100%" placeholder="https://news.example.com">
+    </div>
+    <button type="submit">Record a view</button>
+    <span class="mono" style="color:var(--muted);font-size:12px">writes through analytics.tracker.record()</span>
+  </form>
+</div>
+
+<h2>Recent page views</h2>
+<div class="card">
+  {% if recent %}
+  <table>
+    <thead><tr><th>#</th><th>Path</th><th>Referrer</th><th>Country</th><th>IP hash</th><th>At (UTC)</th></tr></thead>
+    <tbody>
+    {% for v in recent %}
+      <tr>
+        <td class="mono">{{ v.id }}</td>
+        <td class="mono">{{ v.path }}</td>
+        <td class="mono">{{ v.referrer or '(direct)' }}</td>
+        <td class="mono">{{ v.country or '(unknown)' }}</td>
+        <td class="mono">{{ v.ip_hash[:12] }}…</td>
+        <td class="mono">{{ v.at.strftime('%Y-%m-%d %H:%M:%S') if v.at else '' }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  <p class="sub" style="margin:12px 0 0">The IP hash column is a salted SHA-256 prefix — it cannot be reversed into an address.</p>
+  {% else %}
+  <div class="empty">No page views for this site yet.</div>
+  {% endif %}
+</div>
+{% endblock %}

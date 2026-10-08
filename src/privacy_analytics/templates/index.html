@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Overview · {{ app_name }}{% endblock %}
+{% block content %}
+<h1>Overview</h1>
+<p class="sub">Cookie-free, cookieless privacy analytics. Visitors are counted from a salted hash of the request IP; the raw address is never written to the database.</p>
+
+<div class="grid">
+  <div class="stat"><div class="k">Sites</div><div class="v">{{ site_count }}</div></div>
+  <div class="stat"><div class="k">Page views (all time)</div><div class="v">{{ view_total }}</div></div>
+  <div class="stat"><div class="k">Views / last {{ days }}d</div><div class="v">{{ window_views }}</div></div>
+  <div class="stat"><div class="k">Unique visitors / {{ days }}d</div><div class="v">{{ window_visitors }}</div></div>
+  <div class="stat"><div class="k">Countries seen</div><div class="v">{{ country_count }}</div></div>
+  <div class="stat"><div class="k">Hashing salt</div><div class="v sm mono">{{ salt_source }}</div></div>
+</div>
+
+<h2>Views per day (all sites, last {{ days }}d)</h2>
+<div class="card">
+  {% if series %}
+  <div class="chart">
+    {% for d in series %}
+      <div class="col" title="{{ d.date }}: {{ d.views }} views / {{ d.visitors }} visitors">
+        <i style="height:{{ (d.views * 100 / series_max) | round(1) }}%"></i>
+        <span>{{ d.date[5:] }}</span>
+      </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty">No page views in the window. Hit a real <span class="mono">&lt;img src="/pixel/&lt;domain&gt;"&gt;</span> to record one.</div>
+  {% endif %}
+</div>
+
+<h2>Sites</h2>
+<div class="card">
+  {% if rows %}
+  <table>
+    <thead><tr><th>#</th><th>Domain</th><th>Views</th><th>Window</th><th>Pixel URL</th><th></th></tr></thead>
+    <tbody>
+    {% for r in rows %}
+      <tr>
+        <td class="mono">{{ r.site.id }}</td>
+        <td class="mono">{{ r.site.domain }}</td>
+        <td class="mono">{{ r.views }}</td>
+        <td class="mono">{{ r.window }}</td>
+        <td class="mono" style="word-break:break-all">{{ r.pixel }}</td>
+        <td><a href="{{ url_for('site_detail', sid=r.site.id) }}">open</a></td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="empty">No sites registered yet. <a href="{{ url_for('sites_page') }}">Add one</a> to get a pixel URL.</div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,30 @@
+openapi: 3.0.0
+info:
+  title: "📊 analytics"
+  version: 0.1.0
+paths:
+  /pixel/<site>:
+    get:
+      summary: tracking pixel
+      responses:
+        "200":
+          description: 1x1 GIF, Cache-Control no-store, no Set-Cookie
+        "404":
+          description: domain is not registered; nothing is recorded
+  /api/sites:
+    get:
+      summary: list
+      responses:
+        "200":
+          description: registered domains and their view counts
+    post:
+      summary: create
+      responses:
+        "200":
+          description: new site id
+  /api/sites/<id>/stats:
+    get:
+      summary: stats
+      responses:
+        "200":
+          description: series, top pages and referrers for the requested window

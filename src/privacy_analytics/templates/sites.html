@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Sites · {{ app_name }}{% endblock %}
+{% block content %}
+<h1>Sites</h1>
+<p class="sub">Register a domain once, then drop the pixel snippet on that site. Unknown domains answer <span class="mono">404</span> and record nothing.</p>
+
+<div class="card">
+  <form class="row" method="post" action="{{ url_for('sites_page') }}">
+    <div style="min-width:240px">
+      <label for="domain">Domain</label>
+      <input id="domain" type="text" name="domain" style="width:100%" placeholder="example.com" required>
+    </div>
+    <button type="submit">Register site</button>
+    <span class="mono" style="color:var(--muted);font-size:12px">POST /api/sites {"domain": "example.com"}</span>
+  </form>
+</div>
+
+<h2>{{ rows|length }} site(s)</h2>
+<div class="card">
+  {% if rows %}
+  <table>
+    <thead><tr><th>#</th><th>Domain</th><th>Views</th><th>Last {{ days }}d</th><th>Created (UTC)</th><th>Pixel</th><th></th></tr></thead>
+    <tbody>
+    {% for r in rows %}
+      <tr>
+        <td class="mono">{{ r.site.id }}</td>
+        <td class="mono">{{ r.site.domain }}</td>
+        <td class="mono">{{ r.views }}</td>
+        <td class="mono">{{ r.window }}</td>
+        <td class="mono">{{ r.site.created_at.strftime('%Y-%m-%d %H:%M') if r.site.created_at else '' }}</td>
+        <td class="mono" style="word-break:break-all">{{ r.pixel }}</td>
+        <td><a href="{{ url_for('site_detail', sid=r.site.id) }}">open</a></td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="empty">Nothing registered yet.</div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}{{ app_name }}{% endblock %}</title>
+<style>
+:root{--bg:#0b1013;--card:#131a1f;--panel:#0f1519;--border:#1f2a31;--text:#e6eef2;--muted:#8299a4;--accent:#2fd8a5;--blue:#4f8cff;--red:#ff6b6b;--amber:#ffb020}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:14px/1.55 ui-sans-serif,system-ui,"Segoe UI",Roboto,sans-serif}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+nav{display:flex;align-items:center;gap:18px;padding:13px 22px;border-bottom:1px solid var(--border);background:#080d10;position:sticky;top:0;z-index:5}
+nav .brand{font-weight:700}
+nav a{color:var(--muted);font-size:13px}
+nav a.on{color:var(--text);font-weight:600}
+nav .sp{flex:1}
+main{max-width:1100px;margin:0 auto;padding:26px 22px 64px}
+h1{font-size:20px;margin:0 0 2px}
+h2{font-size:14px;margin:26px 0 10px;color:var(--muted);text-transform:uppercase;letter-spacing:.7px}
+p.sub{color:var(--muted);margin:0 0 18px;font-size:13px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 18px;margin:0 0 14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.stat{background:var(--panel);border:1px solid var(--border);border-radius:9px;padding:12px 14px}
+.stat .k{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.7px}
+.stat .v{font-size:22px;font-weight:650;margin-top:3px}
+.stat .v.sm{font-size:13px;font-weight:500;word-break:break-all}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);vertical-align:top}
+th{color:var(--muted);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.6px}
+tr:last-child td{border-bottom:none}
+.mono{font-family:ui-monospace,Consolas,"Courier New",monospace;font-size:12px}
+.chart{display:flex;align-items:flex-end;gap:6px;height:130px;padding-top:8px}
+.chart .col{flex:1;min-width:14px;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%}
+.chart .col i{display:block;width:100%;background:linear-gradient(180deg,var(--accent),#166c53);border-radius:3px 3px 0 0;min-height:2px}
+.chart .col span{color:var(--muted);font-size:10px;margin-top:5px;white-space:nowrap}
+.bar{height:8px;background:var(--panel);border:1px solid var(--border);border-radius:5px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent)}
+label{display:block;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:4px}
+input[type=text],input[type=number],select{background:var(--panel);border:1px solid var(--border);color:var(--text);border-radius:7px;padding:8px 10px;font:inherit;font-size:13px}
+button,.btn{background:var(--accent);color:#04211a;border:0;border-radius:7px;padding:9px 15px;font:inherit;font-size:13px;font-weight:600;cursor:pointer}
+button.ghost{background:transparent;color:var(--text);border:1px solid var(--border);font-weight:500}
+form.row{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;margin:0}
+.tag{display:inline-block;padding:1px 8px;border-radius:20px;font-size:11px;border:1px solid var(--border);color:var(--muted)}
+.tag.g{color:var(--accent);border-color:#1c5a47;background:#0c221b}
+.flash{border-radius:8px;padding:10px 14px;margin:0 0 14px;font-size:13px;border:1px solid var(--border);background:var(--panel)}
+.flash.ok{border-color:#1c5a47;color:var(--accent)}
+.flash.err{border-color:#5c2323;color:var(--red)}
+pre{background:#070b0d;border:1px solid var(--border);border-radius:8px;padding:12px;overflow:auto;font-size:12px;margin:0}
+.empty{color:var(--muted);font-size:13px;padding:10px 2px}
+footer{border-top:1px solid var(--border);color:var(--muted);font-size:12px;padding:16px 22px;text-align:center}
+</style>
+</head>
+<body>
+<nav>
+  <span class="brand">{{ app_name }}</span>
+  <a href="{{ url_for('index') }}"{% if request.endpoint == 'index' %} class="on"{% endif %}>Overview</a>
+  <a href="{{ url_for('sites_page') }}"{% if request.endpoint in ['sites_page','site_detail'] %} class="on"{% endif %}>Sites</a>
+  <a href="{{ url_for('api_docs') }}"{% if request.endpoint == 'api_docs' %} class="on"{% endif %}>API</a>
+  <span class="sp"></span>
+  <a href="{{ url_for('analytics.sites') }}" class="mono">GET /api/sites</a>
+</nav>
+<main>
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for cat, msg in messages %}<div class="flash {{ cat }}">{{ msg }}</div>{% endfor %}
+  {% endwith %}
+  {% block content %}{% endblock %}
+</main>
+<footer>{{ app_name }} v0.1.0 · self-hosted · <a href="{{ url_for('health') }}">/api/health</a> · no cookies, no raw IPs stored</footer>
+{% block scripts %}{% endblock %}
+</body>
+</html>
