@@ -8,6 +8,7 @@
 
 Talks to a running instance (see README: python wsgi.py).
 """
+
 import argparse
 import json
 import os
@@ -17,11 +18,14 @@ import urllib.request
 
 DEFAULT_BASE = os.environ.get("ANALYTICS_URL", "http://127.0.0.1:8000")
 
+
 def _call(method, path, data=None, headers=None, base=None):
-    req = urllib.request.Request((base or DEFAULT_BASE).rstrip("/") + path,
-                                 data=data, method=method, headers=headers or {})
+    req = urllib.request.Request(
+        (base or DEFAULT_BASE).rstrip("/") + path, data=data, method=method, headers=headers or {}
+    )
     with urllib.request.urlopen(req) as r:
         return r.status, dict(r.headers), r.read()
+
 
 def cmd_sites(args):
     try:
@@ -39,21 +43,25 @@ def cmd_sites(args):
         print("%-6s %-30s %10s" % (s["id"], s["domain"][:30], s["views"]))
     return 0
 
+
 def cmd_add(args):
     payload = json.dumps({"domain": args.domain}).encode()
     try:
-        status, headers, data = _call("POST", "/api/sites", payload,
-                                      {"Content-Type": "application/json"}, args.base)
+        status, headers, data = _call(
+            "POST", "/api/sites", payload, {"Content-Type": "application/json"}, args.base
+        )
     except urllib.error.HTTPError as exc:
         print("request failed: HTTP %s %s" % (exc.code, exc.read().decode("utf-8", "replace")))
         return 1
     print("HTTP %s %s" % (status, data.decode().strip()))
     return 0
 
+
 def cmd_stats(args):
     try:
-        status, headers, data = _call("GET", "/api/sites/%d/stats?days=%d" % (args.site_id, args.days),
-                                      base=args.base)
+        status, headers, data = _call(
+            "GET", "/api/sites/%d/stats?days=%d" % (args.site_id, args.days), base=args.base
+        )
     except urllib.error.HTTPError as exc:
         print("request failed: HTTP %s" % exc.code)
         return 1
@@ -70,6 +78,7 @@ def cmd_stats(args):
         print("  %-34s %s%%" % (ref, pct))
     return 0
 
+
 def cmd_pixel(args):
     q = urllib.parse.urlencode({"path": args.path, "ref": args.ref})
     try:
@@ -77,13 +86,23 @@ def cmd_pixel(args):
     except urllib.error.HTTPError as exc:
         print("pixel failed: HTTP %s (unknown domain?)" % exc.code)
         return 1
-    print("HTTP %s %s %d bytes cache-control=%s set-cookie=%s"
-          % (status, headers.get("Content-Type", ""), len(data),
-             headers.get("Cache-Control", ""), headers.get("Set-Cookie", "none")))
+    print(
+        "HTTP %s %s %d bytes cache-control=%s set-cookie=%s"
+        % (
+            status,
+            headers.get("Content-Type", ""),
+            len(data),
+            headers.get("Cache-Control", ""),
+            headers.get("Set-Cookie", "none"),
+        )
+    )
     return 0
 
+
 def main(argv=None):
-    p = argparse.ArgumentParser(prog="analytics", description="privacy-analytics command line client")
+    p = argparse.ArgumentParser(
+        prog="analytics", description="privacy-analytics command line client"
+    )
     p.add_argument("--base", default=DEFAULT_BASE, help="base URL of a running instance")
     sub = p.add_subparsers(dest="cmd")
 

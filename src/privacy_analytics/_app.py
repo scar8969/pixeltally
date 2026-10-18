@@ -1,20 +1,22 @@
+import os
+from datetime import datetime, timedelta
+
+from flask import Flask, flash, jsonify, redirect, render_template, request, url_for
+
+from . import paths
 from .analytics.agg import referrers, rollup, top_pages
 from .analytics.api import bp
 from .analytics.tracker import record
-from .models import DailyAgg, PageView, Site, db
-
-import os
-from datetime import datetime, timedelta
-from pathlib import Path
-
-from flask import Flask, flash, jsonify, redirect, render_template, request, url_for
-from . import paths
+from .models import PageView, Site, db
 
 paths.INSTANCE_DIR.mkdir(parents=True, exist_ok=True)
 
+
 def build_app():
     """Build the application: configuration, database, then routes."""
-    app = Flask(__name__, template_folder=str(paths.TEMPLATES_DIR), instance_path=str(paths.INSTANCE_DIR))
+    app = Flask(
+        __name__, template_folder=str(paths.TEMPLATES_DIR), instance_path=str(paths.INSTANCE_DIR)
+    )
     app.secret_key = os.environ.get("SECRET_KEY", "analytics-dev-secret")
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + str(paths.INSTANCE_DIR / "analytics.db")
     db.init_app(app)
@@ -26,7 +28,7 @@ def build_app():
 
     @app.context_processor
     def _ctx():
-        return {"app_name": "\U0001F4CA analytics"}
+        return {"app_name": "\U0001f4ca analytics"}
 
     def _window(site_id=None, days=DAYS):
         since = datetime.utcnow() - timedelta(days=days)
@@ -74,11 +76,7 @@ def build_app():
     def index():
         series = _all_series(DAYS)
         views, visitors = _window(None, DAYS)
-        countries = {
-            v.country
-            for v in PageView.query.all()
-            if v.country
-        }
+        countries = {v.country for v in PageView.query.all() if v.country}
         return render_template(
             "index.html",
             days=DAYS,
@@ -107,7 +105,11 @@ def build_app():
                 s = Site(domain=domain)
                 db.session.add(s)
                 db.session.commit()
-                flash("Registered %s — pixel is live at %s" % (domain, url_for("analytics.pixel", site=domain)), "ok")
+                flash(
+                    "Registered %s — pixel is live at %s"
+                    % (domain, url_for("analytics.pixel", site=domain)),
+                    "ok",
+                )
                 return redirect(url_for("site_detail", sid=s.id))
         return render_template("sites.html", rows=_site_rows(DAYS), days=DAYS)
 
@@ -133,7 +135,10 @@ def build_app():
             pages_total=pages_total,
             referrers=refs,
             pixel_absolute=url_for("analytics.pixel", site=site.domain, _external=True),
-            recent=PageView.query.filter_by(site_id=sid).order_by(PageView.id.desc()).limit(25).all(),
+            recent=PageView.query.filter_by(site_id=sid)
+            .order_by(PageView.id.desc())
+            .limit(25)
+            .all(),
         )
 
     @app.post("/sites/<int:sid>/pixel")
@@ -153,7 +158,9 @@ def build_app():
     def api_docs():
         rules = []
         for r in sorted(app.url_map.iter_rules(), key=lambda r: str(r)):
-            methods = ",".join(sorted(m for m in r.methods if m in {"GET", "POST", "PUT", "PATCH", "DELETE"}))
+            methods = ",".join(
+                sorted(m for m in r.methods if m in {"GET", "POST", "PUT", "PATCH", "DELETE"})
+            )
             if methods:
                 rules.append({"methods": methods, "rule": str(r), "endpoint": r.endpoint})
         return render_template("api_docs.html", rules=rules)
@@ -162,5 +169,6 @@ def build_app():
         app.run(host="0.0.0.0", port=int(os.environ.get("PORT", "8000")))
 
     return app
+
 
 app = build_app()

@@ -1,13 +1,16 @@
 from datetime import datetime
+
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
+
 
 class Site(db.Model):
     __tablename__ = "sites"
     id = db.Column(db.Integer, primary_key=True)
     domain = db.Column(db.String(128), unique=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
 
 class PageView(db.Model):
     __tablename__ = "page_views"
@@ -19,6 +22,7 @@ class PageView(db.Model):
     ua = db.Column(db.String(256), default="")
     country = db.Column(db.String(8), default="")
     at = db.Column(db.DateTime, default=datetime.utcnow)
+
 
 class DailyAgg(db.Model):
     __tablename__ = "daily_aggs"
