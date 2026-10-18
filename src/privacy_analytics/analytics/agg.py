@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from typing import Any
 
 
 def rollup(site_id, days=30):
@@ -6,7 +7,7 @@ def rollup(site_id, days=30):
 
     since = datetime.utcnow() - timedelta(days=days)
     views = PageView.query.filter(PageView.site_id == site_id, PageView.at >= since).all()
-    series = {}
+    series: dict[str, Any] = {}
     for v in views:
         d = v.at.date().isoformat()
         series.setdefault(d, {"views": 0, "visitors": set()})
@@ -24,7 +25,7 @@ def top_pages(site_id, days=7, limit=10):
     from ..models import PageView
 
     since = datetime.utcnow() - timedelta(days=days)
-    pages = {}
+    pages: dict[str, int] = {}
     for v in PageView.query.filter(PageView.site_id == site_id, PageView.at >= since).all():
         pages[v.path] = pages.get(v.path, 0) + 1
     return sorted(pages.items(), key=lambda kv: -kv[1])[:limit]
@@ -36,7 +37,7 @@ def referrers(site_id, days=7):
     from ..models import PageView
 
     since = datetime.utcnow() - timedelta(days=days)
-    refs = {}
+    refs: dict[str, int] = {}
     for v in PageView.query.filter(PageView.site_id == site_id, PageView.at >= since).all():
         r = v.referrer or "direct"
         refs[r] = refs.get(r, 0) + 1

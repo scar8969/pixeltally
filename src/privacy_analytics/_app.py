@@ -1,5 +1,6 @@
 import os
 from datetime import datetime, timedelta
+from typing import Any
 
 from flask import Flask, flash, jsonify, redirect, render_template, request, url_for
 
@@ -40,7 +41,7 @@ def build_app():
 
     def _all_series(days=DAYS):
         since = datetime.utcnow() - timedelta(days=days)
-        buckets = {}
+        buckets: dict[str, Any] = {}
         for v in PageView.query.filter(PageView.at >= since).all():
             key = v.at.date().isoformat()
             b = buckets.setdefault(key, {"views": 0, "visitors": set()})
@@ -159,7 +160,11 @@ def build_app():
         rules = []
         for r in sorted(app.url_map.iter_rules(), key=lambda r: str(r)):
             methods = ",".join(
-                sorted(m for m in r.methods if m in {"GET", "POST", "PUT", "PATCH", "DELETE"})
+                sorted(
+                    m
+                    for m in (r.methods or set())
+                    if m in {"GET", "POST", "PUT", "PATCH", "DELETE"}
+                )
             )
             if methods:
                 rules.append({"methods": methods, "rule": str(r), "endpoint": r.endpoint})
