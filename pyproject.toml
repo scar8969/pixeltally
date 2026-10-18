@@ -3,13 +3,13 @@ requires = ["setuptools>=69", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "b11-privacy-analytics"
+name = "pixeltally"
 version = "0.1.0"
-description = "A cookie-less web analytics server. One pixel request records a page view keyed by a salted visitor hash -- never an IP address -- and the dashboard reads per-day rollups."
+description = "Cookie-less web analytics: one pixel records a salted visitor hash, never an IP; per-day rollups."
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "MIT" }
-authors = [{ name = "project-skeletons maintainers" }]
+authors = [{ name = "Priyanshu Rout" }]
 keywords = ["flask", "service", "privacy_analytics"]
 classifiers = [
   "Development Status :: 4 - Beta",
@@ -47,7 +47,7 @@ Documentation = "https://example.invalid/privacy_analytics/docs"
 Issues = "https://example.invalid/privacy_analytics/issues"
 
 [project.scripts]
-b11-privacy-analytics = "privacy_analytics.cli:main"
+pixeltally = "privacy_analytics.cli:main"
 
 [tool.setuptools]
 package-dir = { "" = "src" }

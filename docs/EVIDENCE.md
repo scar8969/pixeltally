@@ -79,7 +79,7 @@ process_uptime_seconds 0.545
 `/version` answered **200**:
 
 ```
-{"config":{"app_name":"privacy_analytics","data_dir":"C:\\Users\\priya\\Desktop\\project-skeletons\\projects\\b11_privacy_analytics\\var","database_configured":false,"debug":false,"env":"development","host":"0.0.0.0","legacy_env_present":[],"log_json":true,"log_level":"INFO","port":8000,"secret_key_configured":false},"paths":{"data_dir":"C:\\Users\\priya\\Desktop\\project-skeletons\\projects\\b11_
+{"config":{"app_name":"privacy_analytics","data_dir":".\\var","database_configured":false,"debug":false,"env":"development","host":"0.0.0.0","legacy_env_present":[],"log_json":true,"log_level":"INFO","port":8000,"secret_key_configured":false},"paths":{"data_dir":"b11_
 ```
 
 ## Headers observed on /healthz

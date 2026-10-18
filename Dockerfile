@@ -34,7 +34,7 @@ RUN groupadd --system --gid 1001 app \
 WORKDIR /app
 
 COPY --from=builder /wheels /wheels
-RUN python -m pip install --no-cache-dir --no-index --find-links=/wheels b11-privacy-analytics \
+RUN python -m pip install --no-cache-dir --no-index --find-links=/wheels pixeltally \
  && rm -rf /wheels \
  && mkdir -p /var/lib/privacy_analytics/instance /var/lib/privacy_analytics/log \
  && chown -R app:app /var/lib/privacy_analytics /app

@@ -9,7 +9,7 @@ they do, and what breaks first under load.
 
 ## 1. Context
 
-b11_privacy_analytics is a single-process Flask service. It owns its own database (SQLite by
+pixeltally is a single-process Flask service. It owns its own database (SQLite by
 default, any SQLAlchemy-supported backend via `DATABASE_URL`) and is deployed
 behind a reverse proxy or an orchestrator.
 
@@ -75,7 +75,7 @@ flowchart TB
 | `templates/index.html` | asset |
 | `templates/site.html` | asset |
 | `templates/sites.html` | asset |
-| `tests/test_b11_privacy_analytics.py` | module |
+| `tests/test_pixeltally.py` | module |
 | `_app.py` | asset |
 
 ---
@@ -138,9 +138,9 @@ writable lives under `/app`.
 
 | Table | Owner |
 | --- | --- |
-| `sites` | owned by `b11_privacy_analytics` |
-| `page_views` | owned by `b11_privacy_analytics` |
-| `daily_aggs` | owned by `b11_privacy_analytics` |
+| `sites` | owned by `pixeltally` |
+| `page_views` | owned by `pixeltally` |
+| `daily_aggs` | owned by `pixeltally` |
 
 Tables are created by the application's own bootstrap on first use. No migration
 tool is wired in; the schema is additive, and the service tolerates a missing or

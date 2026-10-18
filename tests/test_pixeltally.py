@@ -1,4 +1,4 @@
-"""B11 privacy-analytics — tests. Run: pytest test_b11_privacy_analytics.py"""
+"""B11 privacy-analytics — tests. Run: pytest test_pixeltally.py"""
 import sys, os
 
 import pytest

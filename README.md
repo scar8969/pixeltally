@@ -1,4 +1,4 @@
-# Privacy Analytics
+# pixeltally
 
 > A cookie-less web analytics server. One pixel request records a page view keyed by a salted visitor hash -- never an IP address -- and the dashboard reads per-day rollups.
 
@@ -6,8 +6,8 @@
 [![python](https://img.shields.io/badge/python-3.11%20%7C%203.12%20%7C%203.13-blue)](pyproject.toml)
 [![license](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
-b11_privacy_analytics is a Flask service delivered as an installable, typed, test-covered
-distribution. The business logic is unchanged from the original skeleton; what
+pixeltally is a Flask service delivered as an installable, typed, test-covered
+distribution. The business logic is unchanged from the original service; what
 is new is the engineering around it: a packaging story, a configuration
 contract, structured observability, operational endpoints, a hardened
 container, and the gates that keep all of that true.
@@ -17,7 +17,7 @@ container, and the gates that keep all of that true.
 ## Quickstart
 
 ```sh
-git clone <your-fork> b11_privacy_analytics && cd b11_privacy_analytics
+git clone <your-fork> pixeltally && cd pixeltally
 python -m venv .venv
 . .venv/bin/activate        # Windows: .venv\Scripts\activate
 pip install -e ".[dev]"
@@ -127,7 +127,7 @@ variable, rather than surfacing as a confusing runtime error later.
 | `/pixel/<site>` | GET | HTML/JSON |
 | `/pixel/<site>` | T | HTML/JSON |
 
-The frozen machine-readable contract is `openapi/b11_privacy_analytics.yaml`; it is the
+The frozen machine-readable contract is `openapi/pixeltally.yaml`; it is the
 source of truth for path and method coverage.
 
 ---
@@ -145,9 +145,9 @@ source of truth for path and method coverage.
 │   ├── ARCHITECTURE.md
 │   └── OPERATIONS.md
 ├── openapi
-│   └── b11_privacy_analytics.yaml
+│   └── pixeltally.yaml
 ├── schema
-│   └── b11_privacy_analytics.sql
+│   └── pixeltally.sql
 ├── src
 │   └── privacy_analytics
 │       ├── analytics
@@ -165,7 +165,7 @@ source of truth for path and method coverage.
 │       └── py.typed
 ├── tests
 │   ├── conftest.py
-│   ├── test_b11_privacy_analytics.py
+│   ├── test_pixeltally.py
 │   ├── test_config.py
 │   └── test_ops.py
 ├── .dockerignore
