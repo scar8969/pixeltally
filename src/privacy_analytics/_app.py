@@ -1,5 +1,5 @@
 import os
-from datetime import datetime, timedelta
+from datetime import timedelta
 from typing import Any
 
 from flask import Flask, flash, jsonify, redirect, render_template, request, url_for
@@ -8,6 +8,7 @@ from . import paths
 from .analytics.agg import referrers, rollup, top_pages
 from .analytics.api import bp
 from .analytics.tracker import record
+from .clock import utcnow
 from .models import PageView, Site, db
 
 paths.INSTANCE_DIR.mkdir(parents=True, exist_ok=True)
@@ -32,7 +33,7 @@ def build_app():
         return {"app_name": "\U0001f4ca analytics"}
 
     def _window(site_id=None, days=DAYS):
-        since = datetime.utcnow() - timedelta(days=days)
+        since = utcnow() - timedelta(days=days)
         q = PageView.query.filter(PageView.at >= since)
         if site_id is not None:
             q = q.filter(PageView.site_id == site_id)
@@ -40,7 +41,7 @@ def build_app():
         return views, len({v.ip_hash for v in views})
 
     def _all_series(days=DAYS):
-        since = datetime.utcnow() - timedelta(days=days)
+        since = utcnow() - timedelta(days=days)
         buckets: dict[str, Any] = {}
         for v in PageView.query.filter(PageView.at >= since).all():
             key = v.at.date().isoformat()

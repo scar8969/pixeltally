@@ -123,7 +123,7 @@ Produced on this checkout by `pytest --cov` and by booting `wsgi.py` and issuing
 | --- | --- |
 | Tests | **24 / 24 passed** (2.3 s, exit 0) |
 | Line coverage | **63.0%** — 441 of 669 statements |
-| Source | 15 files / 1,496 lines |
+| Source | 15 files / 1,515 lines |
 | Test code | 4 files / 234 lines |
 | Documented paths | 3 in the spec, 3 GET |
 | Live probe | 13 GET requests to the booted app, **10 answered 200** |
@@ -156,7 +156,7 @@ Every response carries `X-Request-ID`, and the matching log line is written once
 pixeltally/
 ├── src/privacy_analytics/
 │   ├── http.py                         379  HTTP plumbing for privacy_analytics: correlation ids
-│   ├── _app.py                         180  
+│   ├── _app.py                         181  
 │   ├── config.py                       173  Environment-driven configuration for privacy_analyti
 │   ├── observability.py                169  Structured logging and request correlation for priva
 │   ├── cli.py                          136  Command line client for privacy-analytics

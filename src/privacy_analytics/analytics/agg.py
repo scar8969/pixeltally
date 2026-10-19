@@ -1,11 +1,13 @@
-from datetime import datetime, timedelta
+from datetime import timedelta
 from typing import Any
+
+from ..clock import utcnow
 
 
 def rollup(site_id, days=30):
     from ..models import PageView
 
-    since = datetime.utcnow() - timedelta(days=days)
+    since = utcnow() - timedelta(days=days)
     views = PageView.query.filter(PageView.site_id == site_id, PageView.at >= since).all()
     series: dict[str, Any] = {}
     for v in views:
@@ -20,11 +22,10 @@ def rollup(site_id, days=30):
 
 
 def top_pages(site_id, days=7, limit=10):
-    from datetime import timedelta
 
     from ..models import PageView
 
-    since = datetime.utcnow() - timedelta(days=days)
+    since = utcnow() - timedelta(days=days)
     pages: dict[str, int] = {}
     for v in PageView.query.filter(PageView.site_id == site_id, PageView.at >= since).all():
         pages[v.path] = pages.get(v.path, 0) + 1
@@ -32,11 +33,10 @@ def top_pages(site_id, days=7, limit=10):
 
 
 def referrers(site_id, days=7):
-    from datetime import timedelta
 
     from ..models import PageView
 
-    since = datetime.utcnow() - timedelta(days=days)
+    since = utcnow() - timedelta(days=days)
     refs: dict[str, int] = {}
     for v in PageView.query.filter(PageView.site_id == site_id, PageView.at >= since).all():
         r = v.referrer or "direct"

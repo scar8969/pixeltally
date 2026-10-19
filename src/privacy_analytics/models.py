@@ -1,6 +1,6 @@
-from datetime import datetime
-
 from flask_sqlalchemy import SQLAlchemy
+
+from .clock import utcnow
 
 db = SQLAlchemy()
 
@@ -9,7 +9,7 @@ class Site(db.Model):
     __tablename__ = "sites"
     id = db.Column(db.Integer, primary_key=True)
     domain = db.Column(db.String(128), unique=True)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=utcnow)
 
 
 class PageView(db.Model):
@@ -21,7 +21,7 @@ class PageView(db.Model):
     ip_hash = db.Column(db.String(64), default="")
     ua = db.Column(db.String(256), default="")
     country = db.Column(db.String(8), default="")
-    at = db.Column(db.DateTime, default=datetime.utcnow)
+    at = db.Column(db.DateTime, default=utcnow)
 
 
 class DailyAgg(db.Model):
