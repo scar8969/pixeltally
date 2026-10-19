@@ -4,7 +4,7 @@ Every line below was produced by a command run against this exact checkout, on t
 
 | | |
 | --- | --- |
-| Generated | 2026-10-19 02:22 |
+| Generated | 2026-10-19 09:40 |
 | Python | 3.14.7 |
 | Platform | Windows 11 |
 
@@ -15,7 +15,7 @@ python -m pytest -q
 ```
 
 - exit code **0**
-- 24 passed, 1 warning in 1.32s
+- 24 passed, 1 warning in 1.09s
 
 ## Static gates
 
@@ -37,6 +37,25 @@ The application was imported through `wsgi.py` and each GET path declared in `op
 | 200 | `/api/sites/1/stats` | 40 | application/json |
 
 3 paths walked, 0 of them raised or answered 5xx.
+
+## CLI
+
+```
+usage: analytics [-h] [--base BASE] {sites,add,stats,pixel} ...
+
+privacy-analytics command line client
+
+positional arguments:
+  {sites,add,stats,pixel}
+    sites               list registered sites
+    add                 register a domain
+    stats               show rollup / top pages / referrers for a site id
+    pixel               fire the tracking pixel once and report what came back
+
+options:
+  -h, --help            show this help message and exit
+  --base BASE           base URL of a running instance
+```
 
 ## Screenshots
 
